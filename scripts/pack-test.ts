@@ -34,17 +34,17 @@ try {
   );
 
   const packageDirectory = join(temporaryDirectory, "node_modules/aria-ng-cli");
-  for (const path of [
-    "dist/cli.js",
-    "LICENSE",
-    "README.md",
-    "THIRD_PARTY_NOTICES.md",
-    "vendor/ariang/index.html",
-    "vendor/ariang/LICENSE",
-    "vendor/ariang.manifest.json",
-  ]) {
-    await access(join(packageDirectory, path));
-  }
+  await Promise.all(
+    [
+      "dist/cli.js",
+      "LICENSE",
+      "README.md",
+      "THIRD_PARTY_NOTICES.md",
+      "vendor/ariang/index.html",
+      "vendor/ariang/LICENSE",
+      "vendor/ariang.manifest.json",
+    ].map((path) => access(join(packageDirectory, path))),
+  );
 
   const packageJson = JSON.parse(
     await readFile(join(packageDirectory, "package.json"), "utf8"),

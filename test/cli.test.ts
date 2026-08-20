@@ -9,7 +9,7 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-test("--version reports the wrapper and bundled AriaNg versions", () => {
+void test("--version reports the wrapper and bundled AriaNg versions", () => {
   const result = spawnSync(process.execPath, ["--import", "tsx", "src/cli.ts", "--version"], {
     cwd: process.cwd(),
     encoding: "utf8",
@@ -20,7 +20,7 @@ test("--version reports the wrapper and bundled AriaNg versions", () => {
   assert.equal(result.stdout, "aria-ng-cli 0.1.0 (AriaNg 1.3.14)\n");
 });
 
-test("--help documents the complete public CLI", () => {
+void test("--help documents the complete public CLI", () => {
   const result = spawnSync(process.execPath, ["--import", "tsx", "src/cli.ts", "--help"], {
     cwd: process.cwd(),
     encoding: "utf8",
@@ -48,7 +48,7 @@ test("--help documents the complete public CLI", () => {
   );
 });
 
-test("invalid commands and command-specific options fail clearly", () => {
+void test("invalid commands and command-specific options fail clearly", () => {
   const cases = [
     [["status"], "Unknown command: status\n"],
     [["start", "extra"], "Unexpected argument: extra\n"],
@@ -66,7 +66,7 @@ test("invalid commands and command-specific options fail clearly", () => {
   }
 });
 
-test("start serves the bundled AriaNg release over HTTP", async () => {
+void test("start serves the bundled AriaNg release over HTTP", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const child = spawn(process.execPath, ["--import", "tsx", "src/cli.ts", "start", "--port", "0"], {
     cwd: process.cwd(),
@@ -92,7 +92,7 @@ test("start serves the bundled AriaNg release over HTTP", async () => {
   }
 });
 
-test("start owns a standard pidfile until the server exits", async () => {
+void test("start owns a standard pidfile until the server exits", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const pidfile = join(runtimeDirectory, "aria-ng", "aria-ng.pid");
   const child = spawn(process.execPath, ["--import", "tsx", "src/cli.ts", "--port", "0"], {
@@ -118,7 +118,7 @@ test("start owns a standard pidfile until the server exits", async () => {
   }
 });
 
-test("a second start is rejected by the per-user singleton", async () => {
+void test("a second start is rejected by the per-user singleton", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const environment = { ...process.env, XDG_RUNTIME_DIR: runtimeDirectory };
   const first = spawn(process.execPath, ["--import", "tsx", "src/cli.ts", "--port", "0"], {
@@ -147,7 +147,7 @@ test("a second start is rejected by the per-user singleton", async () => {
   }
 });
 
-test("stop is idempotent when AriaNg is not running", async () => {
+void test("stop is idempotent when AriaNg is not running", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   try {
     const result = spawnSync(process.execPath, ["--import", "tsx", "src/cli.ts", "stop"], {
@@ -164,7 +164,7 @@ test("stop is idempotent when AriaNg is not running", async () => {
   }
 });
 
-test("stop cleans a stale pidfile and remains idempotent", async () => {
+void test("stop cleans a stale pidfile and remains idempotent", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const pidDirectory = join(runtimeDirectory, "aria-ng");
   const pidfile = join(pidDirectory, "aria-ng.pid");
@@ -186,7 +186,7 @@ test("stop cleans a stale pidfile and remains idempotent", async () => {
   }
 });
 
-test("stop rejects an unsafe pidfile instead of signaling a process group", async () => {
+void test("stop rejects an unsafe pidfile instead of signaling a process group", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const pidDirectory = join(runtimeDirectory, "aria-ng");
   const pidfile = join(pidDirectory, "aria-ng.pid");
@@ -208,7 +208,7 @@ test("stop rejects an unsafe pidfile instead of signaling a process group", asyn
   }
 });
 
-test("stop gracefully terminates the running AriaNg server", async () => {
+void test("stop gracefully terminates the running AriaNg server", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const environment = { ...process.env, XDG_RUNTIME_DIR: runtimeDirectory };
   const child = spawn(process.execPath, ["--import", "tsx", "src/cli.ts", "--port", "0"], {
@@ -246,7 +246,7 @@ test("stop gracefully terminates the running AriaNg server", async () => {
   }
 });
 
-test("--daemon returns only after the detached server is ready", async () => {
+void test("--daemon returns only after the detached server is ready", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const environment = { ...process.env, XDG_RUNTIME_DIR: runtimeDirectory };
 
@@ -293,7 +293,7 @@ test("--daemon returns only after the detached server is ready", async () => {
   }
 });
 
-test("--daemon reports a listen failure instead of returning success", async () => {
+void test("--daemon reports a listen failure instead of returning success", async () => {
   const runtimeDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-test-"));
   const occupiedServer = createServer();
   await new Promise<void>((resolve) => occupiedServer.listen(0, "127.0.0.1", resolve));
@@ -322,7 +322,7 @@ test("--daemon reports a listen failure instead of returning success", async () 
   }
 });
 
-test(
+void test(
   "--open warns without stopping the server when the browser launcher fails",
   { skip: process.platform !== "darwin" },
   async () => {

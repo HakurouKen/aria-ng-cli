@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "perf": "error"
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**", "vendor/**"],
+  "rules": {
+    "no-debugger": "error"
+  }
+}

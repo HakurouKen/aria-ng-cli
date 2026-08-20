@@ -19,45 +19,47 @@ export interface Pidfile {
 export async function acquirePidfile(): Promise<Pidfile> {
   const path = getPidfilePath();
   await mkdir(dirname(path), { mode: 0o700, recursive: true });
+  return claimPidfile(path);
+}
 
-  for (;;) {
-    let file;
-    try {
-      file = await open(path, "wx", 0o600);
-    } catch (error) {
-      if (!hasCode(error, "EEXIST")) {
-        throw error;
-      }
-    }
-
-    if (file) {
-      try {
-        await file.writeFile(`${String(process.pid)}\n`, "utf8");
-      } catch (error) {
-        await file.close();
-        await unlink(path).catch(() => undefined);
-        throw error;
-      }
-      await file.close();
-      return {
-        path,
-        release: async () => releasePidfile(path, process.pid),
-      };
-    }
-
-    const existingPid = await readPid(path);
-    if (isProcessRunning(existingPid)) {
-      throw new Error(`AriaNg is already running (pid ${String(existingPid)})`);
-    }
-
-    try {
-      await unlink(path);
-    } catch (error) {
-      if (!hasCode(error, "ENOENT")) {
-        throw error;
-      }
+async function claimPidfile(path: string): Promise<Pidfile> {
+  let file;
+  try {
+    file = await open(path, "wx", 0o600);
+  } catch (error) {
+    if (!hasCode(error, "EEXIST")) {
+      throw error;
     }
   }
+
+  if (file) {
+    try {
+      await file.writeFile(`${String(process.pid)}\n`, "utf8");
+    } catch (error) {
+      await file.close();
+      await unlink(path).catch(() => undefined);
+      throw error;
+    }
+    await file.close();
+    return {
+      path,
+      release: async () => releasePidfile(path, process.pid),
+    };
+  }
+
+  const existingPid = await readPid(path);
+  if (isProcessRunning(existingPid)) {
+    throw new Error(`AriaNg is already running (pid ${String(existingPid)})`);
+  }
+
+  try {
+    await unlink(path);
+  } catch (error) {
+    if (!hasCode(error, "ENOENT")) {
+      throw error;
+    }
+  }
+  return claimPidfile(path);
 }
 
 /** Returns the fixed per-user AriaNg pidfile path for the current platform. */

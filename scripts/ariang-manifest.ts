@@ -29,10 +29,10 @@ export async function createAriaNgManifest(
   metadata: Pick<AriaNgManifest, "archive" | "version">,
 ): Promise<AriaNgManifest> {
   const paths = await listFiles(directory);
-  const files: Record<string, string> = {};
-  for (const path of paths) {
-    files[path] = sha256(await readFile(join(directory, ...path.split("/"))));
-  }
+  const entries = await Promise.all(
+    paths.map(async (path) => [path, sha256(await readFile(join(directory, ...path.split("/"))))]),
+  );
+  const files = Object.fromEntries(entries) as Record<string, string>;
   return { ...metadata, files };
 }
 
@@ -69,18 +69,21 @@ async function listFiles(directory: string, prefix = ""): Promise<readonly strin
   const entries = await readdir(join(directory, ...prefix.split("/").filter(Boolean)), {
     withFileTypes: true,
   });
-  const paths: string[] = [];
-  for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
-    const path = prefix ? `${prefix}/${entry.name}` : entry.name;
-    if (entry.isDirectory()) {
-      paths.push(...(await listFiles(directory, path)));
-    } else if (entry.isFile()) {
-      paths.push(path);
-    } else {
-      throw new Error(`Unsupported vendor entry: ${path}`);
-    }
-  }
-  return paths;
+  const paths = await Promise.all(
+    entries
+      .sort((left, right) => left.name.localeCompare(right.name))
+      .map(async (entry): Promise<readonly string[]> => {
+        const path = prefix ? `${prefix}/${entry.name}` : entry.name;
+        if (entry.isDirectory()) {
+          return listFiles(directory, path);
+        }
+        if (entry.isFile()) {
+          return [path];
+        }
+        throw new Error(`Unsupported vendor entry: ${path}`);
+      }),
+  );
+  return paths.flat();
 }
 
 function sha256(contents: Uint8Array): string {

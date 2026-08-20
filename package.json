@@ -23,15 +23,19 @@
   "type": "module",
   "scripts": {
     "build": "tsdown",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm verify:ariang",
+    "check": "pnpm format:check && pnpm lint && pnpm lint:type-aware && pnpm typecheck && pnpm test && pnpm verify:ariang",
     "format": "oxfmt --ignore-path .oxfmtignore --write .",
     "format:check": "oxfmt --ignore-path .oxfmtignore --check .",
-    "lint": "oxlint --deny-warnings --ignore-pattern 'vendor/**' .",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix",
+    "lint:type-aware": "oxlint --type-aware",
     "pack:test": "tsx scripts/pack-test.ts",
     "prepack": "pnpm build && pnpm verify:ariang",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky",
     "sync:ariang": "tsx scripts/sync-ariang.ts",
     "test": "tsx --test",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "verify:ariang": "tsx scripts/verify-ariang.ts"
   },
   "dependencies": {
@@ -39,14 +43,19 @@
     "sirv": "3.0.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@types/node": "22.20.0",
-    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "extract-zip": "2.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "only-allow": "1.2.2",
     "oxfmt": "0.64.0",
     "oxlint": "1.79.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "tsdown": "0.22.14",
     "tsx": "4.23.12",
-    "typescript": "7.0.2"
+    "typescript": "^7.0.0"
   },
   "engines": {
     "node": ">=22"

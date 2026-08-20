@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import open from "open";
 import sirv from "sirv";
-import { acquirePidfile, getRunningPid } from "./pidfile.js";
+import { acquirePidfile, getRunningPid } from "./pidfile";
 
 interface PackageMetadata {
   readonly ariangVersion: string;
@@ -134,16 +134,23 @@ async function stopServer(): Promise<void> {
   }
 
   process.kill(pid, "SIGTERM");
-  const deadline = Date.now() + 5_000;
-  while (Date.now() < deadline) {
-    if ((await getRunningPid()) === undefined) {
-      process.stdout.write(`AriaNg stopped (pid ${String(pid)})\n`);
-      return;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 50));
+  if (await waitUntilStopped(Date.now() + 5_000)) {
+    process.stdout.write(`AriaNg stopped (pid ${String(pid)})\n`);
+    return;
   }
 
   throw new Error(`Timed out waiting for AriaNg to stop (pid ${String(pid)})`);
+}
+
+async function waitUntilStopped(deadline: number): Promise<boolean> {
+  if ((await getRunningPid()) === undefined) {
+    return true;
+  }
+  if (Date.now() >= deadline) {
+    return false;
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  return waitUntilStopped(deadline);
 }
 
 async function startDaemon(host: string, port: number): Promise<StartedServer> {

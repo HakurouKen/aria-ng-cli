@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { verifyAriaNgManifest, type AriaNgManifest } from "./ariang-manifest.js";
+import { verifyAriaNgManifest, type AriaNgManifest } from "./ariang-manifest";
 
 try {
   const manifestPath = resolve("vendor/ariang.manifest.json");

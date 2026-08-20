@@ -5,7 +5,7 @@ import { test } from "node:test";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-test("verify:ariang accepts the untouched official release", () => {
+void test("verify:ariang accepts the untouched official release", () => {
   const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/verify-ariang.ts"], {
     cwd: process.cwd(),
     encoding: "utf8",
@@ -16,7 +16,7 @@ test("verify:ariang accepts the untouched official release", () => {
   assert.equal(result.stdout, "Verified AriaNg 1.3.14 (32 files)\n");
 });
 
-test("verify:ariang rejects a modified release file", async () => {
+void test("verify:ariang rejects a modified release file", async () => {
   const fixture = await mkdtemp(join(tmpdir(), "aria-ng-integrity-test-"));
   try {
     await mkdir(join(fixture, "vendor"));

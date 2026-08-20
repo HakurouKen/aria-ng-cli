@@ -3,7 +3,7 @@ import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import extract from "extract-zip";
-import { createAriaNgManifest } from "./ariang-manifest.js";
+import { createAriaNgManifest } from "./ariang-manifest";
 
 interface GitHubAsset {
   readonly browser_download_url: string;
