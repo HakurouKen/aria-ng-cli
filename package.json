@@ -1,0 +1,56 @@
+{
+  "name": "aria-ng-cli",
+  "version": "0.1.0",
+  "description": "Serve the official AriaNg release from a small Node.js CLI.",
+  "keywords": [
+    "aria2",
+    "ariang",
+    "cli",
+    "http-server"
+  ],
+  "license": "MIT",
+  "bin": {
+    "aria-ng": "./dist/cli.js"
+  },
+  "files": [
+    "dist/",
+    "vendor/ariang/",
+    "vendor/ariang.manifest.json",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm verify:ariang",
+    "format": "oxfmt --ignore-path .oxfmtignore --write .",
+    "format:check": "oxfmt --ignore-path .oxfmtignore --check .",
+    "lint": "oxlint --deny-warnings --ignore-pattern 'vendor/**' .",
+    "pack:test": "tsx scripts/pack-test.ts",
+    "prepack": "pnpm build && pnpm verify:ariang",
+    "sync:ariang": "tsx scripts/sync-ariang.ts",
+    "test": "tsx --test",
+    "typecheck": "tsgo --noEmit",
+    "verify:ariang": "tsx scripts/verify-ariang.ts"
+  },
+  "dependencies": {
+    "open": "11.0.1",
+    "sirv": "3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.0",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
+    "extract-zip": "2.0.1",
+    "oxfmt": "0.64.0",
+    "oxlint": "1.79.0",
+    "tsdown": "0.22.14",
+    "tsx": "4.23.12",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "ariangVersion": "1.3.14"
+}

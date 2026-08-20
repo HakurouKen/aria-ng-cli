@@ -1,0 +1,41 @@
+{
+  "archive": {
+    "sha256": "e00db79b4cabac70f71c2673a6d454c8a92bfa9aa1f37bb00b01b7505f956805",
+    "url": "https://github.com/mayswind/AriaNg/releases/download/1.3.14/AriaNg-1.3.14.zip"
+  },
+  "version": "1.3.14",
+  "files": {
+    "css/aria-ng-f90ba723d9.min.css": "a03e4b77b1725f2e428a12f331c0120d280597161258f1cabd67dc124ff5bcd9",
+    "css/bootstrap-3.4.1.min.css": "c28eb8900abce3c478234e62390838556d839c10b7073b2ba42bcbae20d6e2fc",
+    "css/plugins-ccac6fc3fc.min.css": "a373cdf8d64be9b1938cefdfa03fd43f5ba794c51b7de783806dd16b988203ee",
+    "favicon.ico": "161f0a897febe13f34df6e0a7e8ad3ba12889d90a71ca8a3bbac0875075098fb",
+    "favicon.png": "3fd8ef3c9d064084f50a251431b5592a2e9b31326b87793c88c9ae9a4c7e265a",
+    "fonts/fontawesome-webfont.eot": "7bfcab6db99d5cfbf1705ca0536ddc78585432cc5fa41bbd7ad0f009033b2979",
+    "fonts/fontawesome-webfont.svg": "ad6157926c1622ba4e1d03d478f1541368524bfc46f51e42fe0d945f7ef323e4",
+    "fonts/fontawesome-webfont.ttf": "aa58f33f239a0fb02f5c7a6c45c043d7a9ac9a093335806694ecd6d4edc0d6a8",
+    "fonts/fontawesome-webfont.woff": "ba0c59deb5450f5cb41b3f93609ee2d0d995415877ddfa223e8a8a7533474f07",
+    "fonts/fontawesome-webfont.woff2": "2adefcbc041e7d18fcf2d417879dc5a09997aa64d675b7a3c4b6ce33da13f3fe",
+    "index.html": "5e10193b7983ff8b4e758e7a8082e24052c653e4519a27e7c294dec0c5df73a9",
+    "js/angular-packages-1.6.10.min.js": "629638fb36f6f74049c6350651ab0815c8517248720f12084b117d3d96aefbd9",
+    "js/aria-ng-a5324ae04a.min.js": "d8ff216c8c5c8a845e8382430b68c8195dc82745808a9a9df2f5f1278bd1140e",
+    "js/bootstrap-3.4.1.min.js": "9ee2fcff6709e4d0d24b09ca0fc56aade12b4961ed9c43fd13b03248bfb57afe",
+    "js/echarts-common-3.8.5.min.js": "b2d40b7e8c9b925f00213bbe9944ae765f5637f1657921b744a5f3946c98c4c1",
+    "js/jquery-3.3.1.min.js": "0925e8ad7bd971391a8b1e98be8e87a6971919eb5b60c196485941c3c1df089a",
+    "js/moment-with-locales-2.29.4.min.js": "908ac76e9f34dc138359de91d570ce3ec972246fb892ffc2638c9a0339d94012",
+    "js/plugins-b3cb190423.min.js": "a3dae6fd4117844fc189201acaf85ff841ebf29f7c0dd680c8fa6ef36e9ccf96",
+    "langs/cz_CZ.txt": "6836f135e3ed010fd2e7b00a13ee10acfec9e1b54f065473f69735dba2278851",
+    "langs/de_DE.txt": "599ae54870f299723520b8ef57d27a065b9f1f8fc27cb99b578946495906ad98",
+    "langs/es.txt": "e99e6d789d6a73ed68f16bbed7280a3080c6eff374b06cfa472d959969ff5184",
+    "langs/fr_FR.txt": "7416305ef5cfaa21d47c63b381f2ec011251c30be4190a37cba401cb4107113a",
+    "langs/it_IT.txt": "508f7a230388529fc3a89008ba3481a2460f5064199130e7592cca4778f9b6f4",
+    "langs/ja_JP.txt": "645507064bbbcc10052bebbde55c88056138f3297c6b5b2040827bb64dc58b57",
+    "langs/pl_PL.txt": "ce6b29864d2d1e9b7259641ae9b943e181501c0e71a75ceb477f03b41f33ab32",
+    "langs/ru_RU.txt": "e936221d719935377027f40abee72b05e94b6cf3c12dcba1c686c71a6bf373c7",
+    "langs/zh_Hans.txt": "45ea7815be63991180ab4769fde7e423d44208cc38ca75d5a9436eb0c7e77fb7",
+    "langs/zh_Hant.txt": "080a9094c08fc8ed9f19012e256d388fe397086f247d80e5fbc03e16775c9435",
+    "LICENSE": "cbfd5dc92e3fd24a52362a439a12f4584868bbb5bb28faaed37abd2d972fc9d7",
+    "robots.txt": "642491b9e1e73326dc483652e4eedc43e19b9289cba7201bb9e80fb5c972ea06",
+    "tileicon.png": "056b4f4276391d3b619958eb6c33ad9e957f571db82057ddd2c00ebffc75cfb5",
+    "touchicon.png": "e6f3e1b579f76d414640fc6c1582f69b3c032f0afe9ec06d2184125cdd4f7d7f"
+  }
+}
