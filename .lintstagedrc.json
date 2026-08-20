@@ -1,7 +1,4 @@
 {
-  "*.{ts,mts,cts,tsx,js,mjs,cjs,jsx}": [
-    "oxlint --fix",
-    "oxfmt --ignore-path .oxfmtignore --write"
-  ],
+  "*.{ts,mts,cts,tsx,js,mjs,cjs,jsx}": ["oxlint --fix", "oxfmt --ignore-path .oxfmtignore --write"],
   "*.{json,jsonc,md,yaml,yml}": ["oxfmt --ignore-path .oxfmtignore --write"]
 }

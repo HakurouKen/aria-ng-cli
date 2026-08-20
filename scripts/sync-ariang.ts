@@ -1,9 +1,9 @@
-import { createHash } from "node:crypto";
-import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
-import extract from "extract-zip";
-import { createAriaNgManifest } from "./ariang-manifest";
+import { createHash } from 'node:crypto';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import extract from 'extract-zip';
+import { createAriaNgManifest } from './ariang-manifest';
 
 interface GitHubAsset {
   readonly browser_download_url: string;
@@ -17,13 +17,13 @@ interface GitHubRelease {
 
 const version = process.argv[2];
 if (!version || !/^\d+\.\d+\.\d+$/.test(version)) {
-  throw new Error("Usage: pnpm sync:ariang -- <version>");
+  throw new Error('Usage: pnpm sync:ariang -- <version>');
 }
 
 const assetName = `AriaNg-${version}.zip`;
 const releaseResponse = await fetch(
   `https://api.github.com/repos/mayswind/AriaNg/releases/tags/${version}`,
-  { headers: { Accept: "application/vnd.github+json" } },
+  { headers: { Accept: 'application/vnd.github+json' } },
 );
 if (!releaseResponse.ok) {
   throw new Error(
@@ -33,7 +33,7 @@ if (!releaseResponse.ok) {
 
 const release = (await releaseResponse.json()) as GitHubRelease;
 const asset = release.assets.find((candidate) => candidate.name === assetName);
-if (!asset?.digest?.startsWith("sha256:")) {
+if (!asset?.digest?.startsWith('sha256:')) {
   throw new Error(`Official release asset ${assetName} has no SHA-256 digest`);
 }
 
@@ -43,16 +43,16 @@ if (!archiveResponse.ok) {
 }
 
 const archive = new Uint8Array(await archiveResponse.arrayBuffer());
-const expectedSha256 = asset.digest.slice("sha256:".length);
-const actualSha256 = createHash("sha256").update(archive).digest("hex");
+const expectedSha256 = asset.digest.slice('sha256:'.length);
+const actualSha256 = createHash('sha256').update(archive).digest('hex');
 if (actualSha256 !== expectedSha256) {
   throw new Error(`SHA-256 mismatch for ${assetName}`);
 }
 
-const temporaryDirectory = await mkdtemp(join(tmpdir(), "aria-ng-cli-sync-"));
+const temporaryDirectory = await mkdtemp(join(tmpdir(), 'aria-ng-cli-sync-'));
 try {
   const archivePath = join(temporaryDirectory, assetName);
-  const extractedDirectory = join(temporaryDirectory, "extracted");
+  const extractedDirectory = join(temporaryDirectory, 'extracted');
   await writeFile(archivePath, archive);
   await extract(archivePath, { dir: extractedDirectory });
 
@@ -64,21 +64,21 @@ try {
     version,
   });
 
-  const vendorDirectory = resolve("vendor/ariang");
+  const vendorDirectory = resolve('vendor/ariang');
   await rm(vendorDirectory, { force: true, recursive: true });
   await cp(extractedDirectory, vendorDirectory, { recursive: true });
   await writeFile(
-    resolve("vendor/ariang.manifest.json"),
+    resolve('vendor/ariang.manifest.json'),
     `${JSON.stringify(manifest, null, 2)}\n`,
-    "utf8",
+    'utf8',
   );
 
-  const packagePath = resolve("package.json");
-  const packageJson = JSON.parse(await readFile(packagePath, "utf8")) as Record<string, unknown>;
+  const packagePath = resolve('package.json');
+  const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as Record<string, unknown>;
   packageJson.ariangVersion = version;
-  await writeFile(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`, "utf8");
+  await writeFile(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`, 'utf8');
   await writeFile(
-    resolve("THIRD_PARTY_NOTICES.md"),
+    resolve('THIRD_PARTY_NOTICES.md'),
     `# Third-party notices
 
 ## AriaNg ${version}
@@ -91,7 +91,7 @@ AriaNg is distributed under the MIT License. The upstream license text is
 included at \`vendor/ariang/LICENSE\` in both this repository and the published
 npm package.
 `,
-    "utf8",
+    'utf8',
   );
   process.stdout.write(
     `Synced AriaNg ${version} (${String(Object.keys(manifest.files).length)} files)\n`,

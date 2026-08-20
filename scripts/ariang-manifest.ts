@@ -1,6 +1,6 @@
-import { createHash } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { createHash } from 'node:crypto';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 /** Integrity metadata for the vendored official AriaNg release. */
 export interface AriaNgManifest {
@@ -26,11 +26,11 @@ export interface AriaNgManifest {
  */
 export async function createAriaNgManifest(
   directory: string,
-  metadata: Pick<AriaNgManifest, "archive" | "version">,
+  metadata: Pick<AriaNgManifest, 'archive' | 'version'>,
 ): Promise<AriaNgManifest> {
   const paths = await listFiles(directory);
   const entries = await Promise.all(
-    paths.map(async (path) => [path, sha256(await readFile(join(directory, ...path.split("/"))))]),
+    paths.map(async (path) => [path, sha256(await readFile(join(directory, ...path.split('/'))))]),
   );
   const files = Object.fromEntries(entries) as Record<string, string>;
   return { ...metadata, files };
@@ -65,8 +65,8 @@ export async function verifyAriaNgManifest(
   return errors;
 }
 
-async function listFiles(directory: string, prefix = ""): Promise<readonly string[]> {
-  const entries = await readdir(join(directory, ...prefix.split("/").filter(Boolean)), {
+async function listFiles(directory: string, prefix = ''): Promise<readonly string[]> {
+  const entries = await readdir(join(directory, ...prefix.split('/').filter(Boolean)), {
     withFileTypes: true,
   });
   const paths = await Promise.all(
@@ -87,5 +87,5 @@ async function listFiles(directory: string, prefix = ""): Promise<readonly strin
 }
 
 function sha256(contents: Uint8Array): string {
-  return createHash("sha256").update(contents).digest("hex");
+  return createHash('sha256').update(contents).digest('hex');
 }

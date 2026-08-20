@@ -1,6 +1,6 @@
-import { mkdir, open, readFile, unlink } from "node:fs/promises";
-import { dirname, isAbsolute, join } from "node:path";
-import { tmpdir } from "node:os";
+import { mkdir, open, readFile, unlink } from 'node:fs/promises';
+import { dirname, isAbsolute, join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 /** A pidfile owned by the current process. */
 export interface Pidfile {
@@ -25,16 +25,16 @@ export async function acquirePidfile(): Promise<Pidfile> {
 async function claimPidfile(path: string): Promise<Pidfile> {
   let file;
   try {
-    file = await open(path, "wx", 0o600);
+    file = await open(path, 'wx', 0o600);
   } catch (error) {
-    if (!hasCode(error, "EEXIST")) {
+    if (!hasCode(error, 'EEXIST')) {
       throw error;
     }
   }
 
   if (file) {
     try {
-      await file.writeFile(`${String(process.pid)}\n`, "utf8");
+      await file.writeFile(`${String(process.pid)}\n`, 'utf8');
     } catch (error) {
       await file.close();
       await unlink(path).catch(() => undefined);
@@ -55,7 +55,7 @@ async function claimPidfile(path: string): Promise<Pidfile> {
   try {
     await unlink(path);
   } catch (error) {
-    if (!hasCode(error, "ENOENT")) {
+    if (!hasCode(error, 'ENOENT')) {
       throw error;
     }
   }
@@ -68,8 +68,8 @@ export function getPidfilePath(): string {
   const runtimeDirectory =
     xdgRuntimeDirectory && isAbsolute(xdgRuntimeDirectory)
       ? xdgRuntimeDirectory
-      : join(tmpdir(), `aria-ng-${process.getuid?.() ?? "user"}`);
-  return join(runtimeDirectory, "aria-ng", "aria-ng.pid");
+      : join(tmpdir(), `aria-ng-${process.getuid?.() ?? 'user'}`);
+  return join(runtimeDirectory, 'aria-ng', 'aria-ng.pid');
 }
 
 /**
@@ -83,7 +83,7 @@ export async function getRunningPid(): Promise<number | undefined> {
   try {
     pid = await readPid(path);
   } catch (error) {
-    if (hasCode(error, "ENOENT")) {
+    if (hasCode(error, 'ENOENT')) {
       return undefined;
     }
     throw error;
@@ -103,14 +103,14 @@ async function releasePidfile(path: string, expectedPid: number): Promise<void> 
       await unlink(path);
     }
   } catch (error) {
-    if (!hasCode(error, "ENOENT")) {
+    if (!hasCode(error, 'ENOENT')) {
       throw error;
     }
   }
 }
 
 async function readPid(path: string): Promise<number> {
-  const contents = await readFile(path, "utf8");
+  const contents = await readFile(path, 'utf8');
   const match = /^\s*(\d+)(?:\s|$)/.exec(contents);
   if (!match?.[1]) {
     throw new Error(`Invalid pidfile: ${path}`);
@@ -127,10 +127,10 @@ function isProcessRunning(pid: number): boolean {
     process.kill(pid, 0);
     return true;
   } catch (error) {
-    return hasCode(error, "EPERM");
+    return hasCode(error, 'EPERM');
   }
 }
 
 function hasCode(error: unknown, code: string): error is NodeJS.ErrnoException {
-  return error instanceof Error && "code" in error && error.code === code;
+  return error instanceof Error && 'code' in error && error.code === code;
 }

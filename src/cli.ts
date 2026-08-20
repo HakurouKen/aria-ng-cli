@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { createServer } from "node:http";
-import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { parseArgs } from "node:util";
-import open from "open";
-import sirv from "sirv";
-import { acquirePidfile, getRunningPid } from "./pidfile";
+import { createServer } from 'node:http';
+import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
+import open from 'open';
+import sirv from 'sirv';
+import { acquirePidfile, getRunningPid } from './pidfile';
 
 interface PackageMetadata {
   readonly ariangVersion: string;
@@ -16,12 +16,12 @@ interface PackageMetadata {
 }
 
 const PACKAGE_METADATA = JSON.parse(
-  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
 ) as PackageMetadata;
 const VERSION = `${PACKAGE_METADATA.name} ${PACKAGE_METADATA.version} (AriaNg ${PACKAGE_METADATA.ariangVersion})`;
-const DEFAULT_HOST = "127.0.0.1";
-const DEFAULT_PORT = "6801";
-const ARIANG_DIRECTORY = fileURLToPath(new URL("../vendor/ariang/", import.meta.url));
+const DEFAULT_HOST = '127.0.0.1';
+const DEFAULT_PORT = '6801';
+const ARIANG_DIRECTORY = fileURLToPath(new URL('../vendor/ariang/', import.meta.url));
 const HELP = `Usage:
   aria-ng [options]
   aria-ng start [options]
@@ -41,7 +41,7 @@ try {
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   if (process.send) {
-    process.send({ message, type: "error" });
+    process.send({ message, type: 'error' });
     process.disconnect?.();
   } else {
     process.stderr.write(`${message}\n`);
@@ -58,13 +58,13 @@ async function main(): Promise<void> {
   const { positionals, values } = parseArgs({
     allowPositionals: true,
     options: {
-      daemon: { type: "boolean" },
-      help: { short: "h", type: "boolean" },
-      host: { type: "string" },
-      "internal-daemon-child": { type: "boolean" },
-      open: { type: "boolean" },
-      port: { short: "p", type: "string" },
-      version: { short: "v", type: "boolean" },
+      daemon: { type: 'boolean' },
+      help: { short: 'h', type: 'boolean' },
+      host: { type: 'string' },
+      'internal-daemon-child': { type: 'boolean' },
+      open: { type: 'boolean' },
+      port: { short: 'p', type: 'string' },
+      version: { short: 'v', type: 'boolean' },
     },
     strict: true,
   });
@@ -78,14 +78,14 @@ async function main(): Promise<void> {
     return;
   }
 
-  const command = positionals[0] ?? "start";
+  const command = positionals[0] ?? 'start';
   const unexpectedArgument = positionals[1];
   if (unexpectedArgument) {
     throw new Error(`Unexpected argument: ${unexpectedArgument}`);
   }
-  if (command === "stop") {
-    const invalidStopOption = ["daemon", "host", "open", "port"].find(
-      (option) => values[option as "daemon" | "host" | "open" | "port"] !== undefined,
+  if (command === 'stop') {
+    const invalidStopOption = ['daemon', 'host', 'open', 'port'].find(
+      (option) => values[option as 'daemon' | 'host' | 'open' | 'port'] !== undefined,
     );
     if (invalidStopOption) {
       throw new Error(`Option --${invalidStopOption} cannot be used with stop`);
@@ -93,18 +93,18 @@ async function main(): Promise<void> {
     await stopServer();
     return;
   }
-  if (command !== "start") {
+  if (command !== 'start') {
     throw new Error(`Unknown command: ${command}`);
   }
 
   const host = values.host ?? DEFAULT_HOST;
   const port = Number(values.port ?? DEFAULT_PORT);
-  if (values["internal-daemon-child"]) {
+  if (values['internal-daemon-child']) {
     if (!process.send) {
-      throw new Error("Internal daemon mode requires an IPC channel");
+      throw new Error('Internal daemon mode requires an IPC channel');
     }
     await startServer(host, port, (started) => {
-      process.send?.({ ...started, type: "ready" });
+      process.send?.({ ...started, type: 'ready' });
       process.disconnect?.();
     });
     return;
@@ -129,11 +129,11 @@ async function main(): Promise<void> {
 async function stopServer(): Promise<void> {
   const pid = await getRunningPid();
   if (pid === undefined) {
-    process.stdout.write("AriaNg is not running\n");
+    process.stdout.write('AriaNg is not running\n');
     return;
   }
 
-  process.kill(pid, "SIGTERM");
+  process.kill(pid, 'SIGTERM');
   if (await waitUntilStopped(Date.now() + 5_000)) {
     process.stdout.write(`AriaNg stopped (pid ${String(pid)})\n`);
     return;
@@ -156,7 +156,7 @@ async function waitUntilStopped(deadline: number): Promise<boolean> {
 async function startDaemon(host: string, port: number): Promise<StartedServer> {
   const entry = process.argv[1];
   if (!entry) {
-    throw new Error("Cannot determine the CLI entry point");
+    throw new Error('Cannot determine the CLI entry point');
   }
 
   const child = spawn(
@@ -164,42 +164,42 @@ async function startDaemon(host: string, port: number): Promise<StartedServer> {
     [
       ...process.execArgv,
       entry,
-      "start",
-      "--internal-daemon-child",
-      "--host",
+      'start',
+      '--internal-daemon-child',
+      '--host',
       host,
-      "--port",
+      '--port',
       String(port),
     ],
     {
       detached: true,
       env: process.env,
-      stdio: ["ignore", "ignore", "ignore", "ipc"],
+      stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
     },
   );
 
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
-      child.kill("SIGTERM");
-      reject(new Error("Timed out waiting for the AriaNg daemon to start"));
+      child.kill('SIGTERM');
+      reject(new Error('Timed out waiting for the AriaNg daemon to start'));
     }, 5_000);
 
-    child.once("error", (error) => {
+    child.once('error', (error) => {
       clearTimeout(timeout);
       reject(error);
     });
-    child.once("exit", (code, signal) => {
+    child.once('exit', (code, signal) => {
       clearTimeout(timeout);
       reject(
         new Error(`AriaNg daemon exited before listening (${signal ?? `code ${String(code)}`})`),
       );
     });
-    child.on("message", (message: unknown) => {
+    child.on('message', (message: unknown) => {
       if (!isDaemonMessage(message)) {
         return;
       }
       clearTimeout(timeout);
-      if (message.type === "error") {
+      if (message.type === 'error') {
         reject(new Error(message.message));
         return;
       }
@@ -219,9 +219,9 @@ async function startServer(
 
   try {
     await new Promise<void>((resolve, reject) => {
-      server.once("error", reject);
+      server.once('error', reject);
       server.listen(port, host, () => {
-        server.off("error", reject);
+        server.off('error', reject);
         resolve();
       });
     });
@@ -231,11 +231,11 @@ async function startServer(
   }
 
   const address = server.address();
-  if (address === null || typeof address === "string") {
-    throw new Error("HTTP server did not expose a TCP address");
+  if (address === null || typeof address === 'string') {
+    throw new Error('HTTP server did not expose a TCP address');
   }
 
-  const urlHost = host.includes(":") ? `[${host}]` : host;
+  const urlHost = host.includes(':') ? `[${host}]` : host;
   onReady({
     pid: process.pid,
     url: `http://${urlHost}:${String(address.port)}`,
@@ -244,10 +244,10 @@ async function startServer(
   const close = (): void => {
     server.close();
   };
-  process.once("SIGINT", close);
-  process.once("SIGTERM", close);
+  process.once('SIGINT', close);
+  process.once('SIGTERM', close);
 
-  await new Promise<void>((resolve) => server.once("close", resolve));
+  await new Promise<void>((resolve) => server.once('close', resolve));
   await pidfile.release();
 }
 
@@ -266,18 +266,18 @@ async function openBrowser(url: string): Promise<void> {
 
 function isDaemonMessage(
   message: unknown,
-): message is { message: string; type: "error" } | { pid: number; type: "ready"; url: string } {
-  if (typeof message !== "object" || message === null || !("type" in message)) {
+): message is { message: string; type: 'error' } | { pid: number; type: 'ready'; url: string } {
+  if (typeof message !== 'object' || message === null || !('type' in message)) {
     return false;
   }
-  if (message.type === "error") {
-    return "message" in message && typeof message.message === "string";
+  if (message.type === 'error') {
+    return 'message' in message && typeof message.message === 'string';
   }
   return (
-    message.type === "ready" &&
-    "pid" in message &&
-    typeof message.pid === "number" &&
-    "url" in message &&
-    typeof message.url === "string"
+    message.type === 'ready' &&
+    'pid' in message &&
+    typeof message.pid === 'number' &&
+    'url' in message &&
+    typeof message.url === 'string'
   );
 }
