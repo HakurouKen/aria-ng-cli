@@ -58,8 +58,10 @@ pnpm build
 pnpm pack:test
 ```
 
-项目使用 TypeScript、tsgo、oxlint、oxfmt 和 tsdown。`pnpm check` 会执行格式、
-lint、类型、测试以及 AriaNg vendor 完整性校验。
+项目使用稳定版 TypeScript 7、tsc、type-aware oxlint、oxfmt 和 tsdown。
+`pnpm check` 会执行格式、lint、类型、测试以及 AriaNg vendor 完整性校验。
+husky 在提交前运行 lint-staged，在提交信息阶段运行 commitlint，并在推送前运行
+全量类型检查与 type-aware lint。
 
 更新内置 AriaNg 时运行：
 
